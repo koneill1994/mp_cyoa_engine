@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WebSocket demo</title>
+    </head>
+    <body>
+    <p>Current task: this page receives lists of numbers.  Replace each list with a new list when it is received, formatted as an unordered list.  Button gets new list from server</p>
+    <button type="button" class="newlist">Get new list from server</button>
+
+        <script>
+            var ws = new WebSocket("ws://127.0.0.1:5678/"),
+                numlist = document.createElement('ul');
+            ws.onmessage = function (packet) {
+            
+                //delete all children of ul
+                while(numlist.firstChild){
+                    numlist.removeChild(numlist.firstChild);
+                }
+                                
+                dat=JSON.parse(event.data)
+                
+                dat.forEach(function(element){
+                    // list_el is the element we create to hold an element
+                    var list_el = document.createElement('li');
+                    // content is the thing we stuff we get from the data
+                    var content = document.createTextNode(element);
+                    list_el.appendChild(content);
+                    numlist.appendChild(list_el);
+                });
+                
+            };
+            document.body.appendChild(numlist);
+            
+            newlist_button=document.querySelector(".newlist");
+            
+            newlist_button.onclick=function(event){
+                ws.send(JSON.stringify({action: 'newlist'}));
+            }
+        </script>
+    </body>
+</html>
