@@ -25,13 +25,16 @@ class BasicEvent:
         self.title=title
         self.description=description
         self.options=options
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, 
+            sort_keys=True, indent=4)
     
 
 op=[("a","action_a"),
 ("b","action_b"),
 ("c","action_c")]
 
-BasicEvent("Event Title",
+be=BasicEvent("Event Title",
 "Event Description",
 op)
 
@@ -54,6 +57,8 @@ async def time(websocket, path):
         data = json.loads(message)
         if data['action']=='newlist':
             await websocket.send(json.dumps(randomlist()))
+        if data['action']=='newevent':
+            await websocket.send(json.dumps(be.toJSON()))
 
 start_server = websockets.serve(time, '127.0.0.1', 5678)
 
