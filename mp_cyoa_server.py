@@ -7,7 +7,34 @@ import datetime
 import random
 import websockets
 
-print(0)
+
+# Create basic event object
+
+# title
+
+# description
+
+# various options (each a button)
+#  each button sends a different command to the server
+
+# option should have text and then a command to send back to the server
+# (is a list of tuples)
+
+class BasicEvent:
+    def __init__(self,title,description,options):
+        self.title=title
+        self.description=description
+        self.options=options
+    
+
+op=[("a","action_a"),
+("b","action_b"),
+("c","action_c")]
+
+BasicEvent("Event Title",
+"Event Description",
+op)
+
 
 def randomlist():
     l=[]
@@ -15,7 +42,6 @@ def randomlist():
         l.append(random.randint(0,100))
     return l
 
-print(1)
     
 list1=randomlist()
     

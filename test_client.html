@@ -8,34 +8,67 @@
     <button type="button" class="newlist">Get new list from server</button>
 
         <script>
-            var ws = new WebSocket("ws://127.0.0.1:5678/"),
-                numlist = document.createElement('ul');
-            ws.onmessage = function (packet) {
+        
+        function DisplayEvent(game_event,ws){
+            eventbox=document.createElement('div')
             
-                //delete all children of ul
-                while(numlist.firstChild){
-                    numlist.removeChild(numlist.firstChild);
+            title=document.createElement('b')
+            title.innerHTML = game_event.title
+            eventbox.appendChild(title)
+            
+            desc=document.createElement('p')
+            desc.innerHTML = game_event.description
+            eventbox.appendChild(desc)
+            
+            choicebox=document.createElement('div')
+            game_event.options.forEach(function(element){
+                choicebutton=document.createElement('button')
+                choicebutton.name=element[0]
+                choicebutton.onclick=function(event){
+                    ws.send(JSON.stringify({action: element[1]}))
                 }
-                                
-                dat=JSON.parse(event.data)
-                
-                dat.forEach(function(element){
-                    // list_el is the element we create to hold an element
-                    var list_el = document.createElement('li');
-                    // content is the thing we stuff we get from the data
-                    var content = document.createTextNode(element);
-                    list_el.appendChild(content);
-                    numlist.appendChild(list_el);
-                });
-                
-            };
-            document.body.appendChild(numlist);
-            
-            newlist_button=document.querySelector(".newlist");
-            
-            newlist_button.onclick=function(event){
-                ws.send(JSON.stringify({action: 'newlist'}));
+                choicebox.appendChild(choicebutton)
+            })            
+            eventbox.appendChild(choicebox)
+            return(eventbox)
+        }
+        
+        
+        var ws = new WebSocket("ws://127.0.0.1:5678/"),
+            numlist = document.createElement('ul');
+        ws.onmessage = function (event) {
+        
+            //delete all children of ul
+            while(numlist.firstChild){
+                numlist.removeChild(numlist.firstChild);
             }
+                            
+            <!-- dat=JSON.parse(event.data) -->
+            
+            <!-- dat.forEach(function(element){ -->
+                <!-- // list_el is the element we create to hold an element -->
+                <!-- var list_el = document.createElement('li'); -->
+                <!-- // content is the thing we stuff we get from the data -->
+                <!-- var content = document.createTextNode(element); -->
+                <!-- list_el.appendChild(content); -->
+                <!-- numlist.appendChild(list_el); -->
+            <!-- }); -->
+            
+            GameEventBox=DisplayEvent(JSON.parse(event.data))
+            
+            document.body.appendChild(GameEventBox)
+            
+        };
+        document.body.appendChild(numlist);
+        
+        newlist_button=document.querySelector(".newlist");
+        
+        newlist_button.onclick=function(event){
+            ws.send(JSON.stringify({action: 'newlist'}));
+        }
+            
+            
+            
         </script>
     </body>
 </html>
