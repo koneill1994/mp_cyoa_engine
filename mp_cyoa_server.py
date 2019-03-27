@@ -7,6 +7,8 @@ import datetime
 import random
 import websockets
 
+# adapted with love from
+# https://websockets.readthedocs.io/en/stable/intro.html
 
 # Create basic event object
 
@@ -20,6 +22,7 @@ import websockets
 # option should have text and then a command to send back to the server
 # (is a list of tuples)
 
+# event should also have a type so that the client knows what to do with it
 class BasicEvent:
     def __init__(self,title,description,options):
         self.title=title

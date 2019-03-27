@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>WebSocket demo</title>
+        <title>mp cyoa demo</title>
     </head>
     <body>
     <p>this is a test page, does not reflect final product</p>
@@ -10,48 +10,66 @@
 
         <script>
         
+        // function to diplay an event in html from packet from server
         function DisplayEvent(game_event,ws){
             eventbox=document.createElement('div')
             
+            //set the title of the event from packet from server
             title=document.createElement('b')
             title.innerHTML = game_event.title
             eventbox.appendChild(title)
             
+            // set the description...[as above]
             desc=document.createElement('p')
             desc.innerHTML = game_event.description
             eventbox.appendChild(desc)
             
+            // set the list of choices the player can make
             choicebox=document.createElement('div')
             game_event.options.forEach(function(element){
                 choicebutton=document.createElement('button')
                 choicebutton.innerHTML=element[0]
+                //set its event to senf back to the server
+                // that it was a choice action
+                // with a value of element[2]
                 choicebutton.onclick=function(event){
                     ws.send(JSON.stringify({action: element[1], new_event: element[2]}))
                 }
+                //append each choice button onto the button holder
                 choicebox.appendChild(choicebutton)
             })            
             eventbox.appendChild(choicebox)
             return(eventbox)
         }
         
-        
+        //open up our websocket (localhost for now)
         var ws = new WebSocket("ws://127.0.0.1:5678/");
+        
+        // create div to hold our event dialogue
         var ev_holder = document.createElement('div');
+        document.body.appendChild(ev_holder);
+                
+        // run this code every time we get sent a message from the server
         ws.onmessage = function (event) {
         
+        // delete the previous contents (so we only have 1 event on screen at a time)
             while(ev_holder.firstChild){
                 ev_holder.removeChild(ev_holder.firstChild);
             }
                      
             <!-- console.log(JSON.parse(JSON.parse(event.data))) -->
             
+            //get the game event from the server
+            // and turn it into a proper div via DisplayEvent()
             GameEventBox=DisplayEvent(JSON.parse(JSON.parse(event.data)),ws)
             
+            //stick our event div into our html
             ev_holder.appendChild(GameEventBox)
             
         };
-        document.body.appendChild(ev_holder);
         
+        //below is testing code to generate a new event from the server
+        // will be made obsolete in later versions
         newevent_button=document.querySelector(".newevent");
         
         newevent_button.onclick=function(event){
