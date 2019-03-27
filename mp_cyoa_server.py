@@ -1,4 +1,3 @@
-print(-1)
 
 import sys
 import json
@@ -6,6 +5,7 @@ import asyncio
 import datetime
 import random
 import websockets
+from PIL import Image
 
 # adapted with love from
 # https://websockets.readthedocs.io/en/stable/intro.html
@@ -24,7 +24,7 @@ import websockets
 
 # event should also have a type so that the client knows what to do with it
 class BasicEvent:
-    def __init__(self,title,description,options):
+    def __init__(self,title,description,image_bytes,options):
         self.title=title
         self.description=description
         self.options=options
@@ -37,8 +37,11 @@ op=[("a","choice","You chose a"),
 ("b","choice","You chose b"),
 ("c","choice","You chose c")]
 
+img=Image.open('test.jpg')
+
 be=BasicEvent("Event Title",
 "Event Description",
+bytearray(img.read()),
 op)
 
 def createEvent(text):
