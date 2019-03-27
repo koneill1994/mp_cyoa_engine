@@ -30,14 +30,16 @@ class BasicEvent:
             sort_keys=True, indent=4)
     
 
-op=[("a","action_a"),
-("b","action_b"),
-("c","action_c")]
+op=[("a","choice","You chose a"),
+("b","choice","You chose b"),
+("c","choice","You chose c")]
 
 be=BasicEvent("Event Title",
 "Event Description",
 op)
 
+def createEvent(text):
+    return BasicEvent("Event Title",text,op)
 
 def randomlist():
     l=[]
@@ -45,12 +47,6 @@ def randomlist():
         l.append(random.randint(0,100))
     return l
 
-    
-list1=randomlist()
-    
-print(list1)
-print(json.dumps(randomlist()))
-    
 
 async def time(websocket, path):
     async for message in websocket:
@@ -59,6 +55,8 @@ async def time(websocket, path):
             await websocket.send(json.dumps(randomlist()))
         if data['action']=='newevent':
             await websocket.send(json.dumps(be.toJSON()))
+        if data['action']=='choice':
+            await websocket.send(json.dumps(createEvent(data['new_event']).toJSON()))
 
 start_server = websockets.serve(time, '127.0.0.1', 5678)
 

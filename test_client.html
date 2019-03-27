@@ -4,7 +4,7 @@
         <title>WebSocket demo</title>
     </head>
     <body>
-    <p>Current task: this page receives lists of numbers.  Replace each list with a new list when it is received, formatted as an unordered list.  Button gets new list from server</p>
+    <p>this is a test page, does not reflect final product</p>
     <button type="button" class="newevent">Get new event from server</button>
 
         <script>
@@ -25,7 +25,7 @@
                 choicebutton=document.createElement('button')
                 choicebutton.innerHTML=element[0]
                 choicebutton.onclick=function(event){
-                    ws.send(JSON.stringify({action: element[1]}))
+                    ws.send(JSON.stringify({action: element[1], new_event: element[2]}))
                 }
                 choicebox.appendChild(choicebutton)
             })            
@@ -34,34 +34,22 @@
         }
         
         
-        var ws = new WebSocket("ws://127.0.0.1:5678/"),
-            numlist = document.createElement('ul');
+        var ws = new WebSocket("ws://127.0.0.1:5678/");
+        var ev_holder = document.createElement('div');
         ws.onmessage = function (event) {
         
-            //delete all children of ul
-            while(numlist.firstChild){
-                numlist.removeChild(numlist.firstChild);
+            while(ev_holder.firstChild){
+                ev_holder.removeChild(ev_holder.firstChild);
             }
-                            
-            <!-- dat=JSON.parse(event.data) -->
-            
-            <!-- dat.forEach(function(element){ -->
-                <!-- // list_el is the element we create to hold an element -->
-                <!-- var list_el = document.createElement('li'); -->
-                <!-- // content is the thing we stuff we get from the data -->
-                <!-- var content = document.createTextNode(element); -->
-                <!-- list_el.appendChild(content); -->
-                <!-- numlist.appendChild(list_el); -->
-            <!-- }); -->
-            
-            console.log(JSON.parse(JSON.parse(event.data)))
+                     
+            <!-- console.log(JSON.parse(JSON.parse(event.data))) -->
             
             GameEventBox=DisplayEvent(JSON.parse(JSON.parse(event.data)),ws)
             
-            document.body.appendChild(GameEventBox)
+            ev_holder.appendChild(GameEventBox)
             
         };
-        document.body.appendChild(numlist);
+        document.body.appendChild(ev_holder);
         
         newevent_button=document.querySelector(".newevent");
         
