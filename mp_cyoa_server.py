@@ -37,20 +37,18 @@ class BasicEvent:
             sort_keys=True, indent=4)
     
 
+
+def encodeImage(image_file):
+    encoded = base64.b64encode(open(image_file, "rb").read())
+    return str('data:image/png;base64,{}'.format(encoded.decode()))
+
 op=[("a","choice","You chose a"),
 ("b","choice","You chose b"),
 ("c","choice","You chose c")]
 
-img=Image.open('test.jpg')
-
-buffered = BytesIO()
-img.save(buffered, format="JPEG")
-img_str = str(base64.b64encode(buffered.getvalue()))
-
-
 be=BasicEvent("Event Title",
 "Event Description",
-img_str,
+encodeImage('test.jpg'),
 op)
 
 def createEvent(text):
