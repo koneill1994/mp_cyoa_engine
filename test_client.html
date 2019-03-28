@@ -19,6 +19,12 @@
             title.innerHTML = game_event.title
             eventbox.appendChild(title)
             
+            //create the image
+            // needs proper decoding from base64 but mostly is there
+            img=new Image();
+            img.src=game_event.image;
+            eventbox.appendChild(img)
+            
             // set the description...[as above]
             desc=document.createElement('p')
             desc.innerHTML = game_event.description
@@ -57,7 +63,7 @@
                 ev_holder.removeChild(ev_holder.firstChild);
             }
                      
-            <!-- console.log(JSON.parse(JSON.parse(event.data))) -->
+            console.log(JSON.parse(JSON.parse(event.data)))
             
             //get the game event from the server
             // and turn it into a proper div via DisplayEvent()

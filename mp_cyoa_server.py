@@ -6,6 +6,8 @@ import datetime
 import random
 import websockets
 from PIL import Image
+import base64
+from io import BytesIO
 
 # adapted with love from
 # https://websockets.readthedocs.io/en/stable/intro.html
@@ -28,6 +30,8 @@ class BasicEvent:
         self.title=title
         self.description=description
         self.options=options
+        self.type="BasicEvent"
+        self.image=image_bytes
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, 
             sort_keys=True, indent=4)
@@ -39,9 +43,14 @@ op=[("a","choice","You chose a"),
 
 img=Image.open('test.jpg')
 
+buffered = BytesIO()
+img.save(buffered, format="JPEG")
+img_str = str(base64.b64encode(buffered.getvalue()))
+
+
 be=BasicEvent("Event Title",
 "Event Description",
-bytearray(img.read()),
+img_str,
 op)
 
 def createEvent(text):
