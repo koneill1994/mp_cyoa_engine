@@ -26,7 +26,7 @@ from io import BytesIO
 
 # event should also have a type so that the client knows what to do with it
 class BasicEvent:
-    def __init__(self,title,description,image_bytes,options):
+    def __init__(self,title="",description="",image_bytes=None,options=[("exit","choice","exit")]):
         self.title=title
         self.description=description
         self.options=options
@@ -47,12 +47,12 @@ op=[("a","choice","You chose a"),
 ("c","choice","You chose c")]
 
 be=BasicEvent("Event Title",
-"Event Description",
+open('lorem.txt').read(),
 encodeImage('test.jpg'),
 op)
 
-def createEvent(text):
-    return BasicEvent("Event Title",text,op)
+def createEvent(title,text,image,op):
+    return BasicEvent(title,text,image,op)
 
 def randomlist():
     l=[]
@@ -69,7 +69,7 @@ async def time(websocket, path):
         if data['action']=='newevent':
             await websocket.send(json.dumps(be.toJSON()))
         if data['action']=='choice':
-            await websocket.send(json.dumps(createEvent(data['new_event']).toJSON()))
+            await websocket.send(json.dumps(createEvent(title=data['new_event']).toJSON()))
 
 start_server = websockets.serve(time, '127.0.0.1', 5678)
 

@@ -13,14 +13,16 @@
         // function to diplay an event in html from packet from server
         function DisplayEvent(game_event,ws){
             eventbox=document.createElement('div')
-            
+            eventbox.setAttribute("id", "eventbox");
+
             //set the title of the event from packet from server
             title=document.createElement('b')
             title.innerHTML = game_event.title
             eventbox.appendChild(title)
             
+            eventbox.appendChild(document.createElement('br'));
+            
             //create the image
-            // needs proper decoding from base64 but mostly is there
             img=new Image();
             img.src=game_event.image;
             eventbox.appendChild(img)
@@ -35,6 +37,7 @@
             game_event.options.forEach(function(element){
                 choicebutton=document.createElement('button')
                 choicebutton.innerHTML=element[0]
+                choicebutton.setAttribute("class", "choicebutton");
                 //set its event to senf back to the server
                 // that it was a choice action
                 // with a value of element[2]
@@ -43,6 +46,7 @@
                 }
                 //append each choice button onto the button holder
                 choicebox.appendChild(choicebutton)
+                choicebox.appendChild(document.createElement('br'));
             })            
             eventbox.appendChild(choicebox)
             return(eventbox)
@@ -85,5 +89,27 @@
             
             
         </script>
+        
+        <style>
+        
+        
+        img{
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 80%;
+        }
+        #eventbox{
+            margin: 0 auto;
+            width: 50%;
+        }
+        .choicebutton{
+            width: 100%;
+            padding: 10px;
+            margin: 10px;
+        }
+        
+        
+        </style>
     </body>
 </html>
