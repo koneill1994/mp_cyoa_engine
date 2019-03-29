@@ -5,9 +5,7 @@ import asyncio
 import datetime
 import random
 import websockets
-from PIL import Image
 import base64
-from io import BytesIO
 
 # adapted with love from
 # https://websockets.readthedocs.io/en/stable/intro.html
@@ -60,8 +58,31 @@ def randomlist():
         l.append(random.randint(0,100))
     return l
 
+def save_http_headers(ws):
+    # i want to inspect the headers so I can see if theres a session variable in there
+    # i can use to identify different users
+    ws_key=ws.request_headers['sec-websocket-key']
+    file=open("headers/"+ws_key+".txt","w")
+    for entry in ws.request_headers:
+        file.write(str(entry)+" "+ ws.request_headers[entry] +"\n")
+    file.close()
+    
+    # ok so
+    # websocket.request_headers['sec-websocket-key']
+    # is our unique session identifier
+    
+USERS = set()
+    
+async def register(websocket):
+    USERS.add(websocket)
+
+async def unregister(websocket):
+    USERS.remove(websocket)
 
 async def time(websocket, path):
+
+    save_http_headers(websocket)
+    
     async for message in websocket:
         data = json.loads(message)
         if data['action']=='newlist':
