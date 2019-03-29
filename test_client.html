@@ -53,6 +53,37 @@
             return(eventbox)
         }
         
+        // function to open up an edit dialogue
+        // that will let the user create event boxes
+        // and connect them to other event boxes
+        function DisplayEditBox(edit_event,ws){
+            editbox=document.createElement('div')
+            editbox.setAttribute("id", "editbox");
+            
+            //set the title of the event from packet from server
+            title=document.createElement('b');
+            title.innerHTML = edit_event.title;
+            title.setAttribute("class","event_title");
+            edit_event.appendChild(title);
+            
+            edit_event.appendChild(document.createElement('br'));
+            
+            formbox=document.createElement('form')
+            edit_event.appendChild(formbox);
+            
+            // for item in input list
+            //present an input text box
+            // or a file upload for the picture
+            //and then a submit button to send it to the server and update the server's state
+        
+            //also link to other events
+            // drop down list of other events?
+            // via <select>
+            // button to add another choicebutton
+            // user can edit choicebutton's text, and the event it links to
+        
+        }
+        
         <!-- function createMessageToServer(message_type){ -->
             <!-- // this function creates objects to be sent to the server -->
             <!-- // each object requires a messagetype to tell the server what to do with it -->

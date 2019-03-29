@@ -34,7 +34,8 @@ class BasicEvent:
         return json.dumps(self, default=lambda o: o.__dict__, 
             sort_keys=True, indent=4)
     
-
+# ability to save events via pickle
+# also list of all events
 
 def encodeImage(image_file):
     encoded = base64.b64encode(open(image_file, "rb").read())
@@ -79,9 +80,11 @@ async def register(websocket):
 async def unregister(websocket):
     USERS.remove(websocket)
 
-async def time(websocket, path):
+    
+# so i think this function runs for each user?
+async def mainloop(websocket, path):
 
-    save_http_headers(websocket)
+    # save_http_headers(websocket)
     
     async for message in websocket:
         data = json.loads(message)
@@ -92,7 +95,7 @@ async def time(websocket, path):
         if data['action']=='choice':
             await websocket.send(json.dumps(createEvent(title=data['new_event']).toJSON()))
 
-start_server = websockets.serve(time, '127.0.0.1', 5678)
+start_server = websockets.serve(mainloop, '127.0.0.1', 5678)
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
