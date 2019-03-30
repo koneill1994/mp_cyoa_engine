@@ -6,6 +6,7 @@ import datetime
 import random
 import websockets
 import base64
+import pickle
 
 # adapted with love from
 # https://websockets.readthedocs.io/en/stable/intro.html
@@ -50,9 +51,22 @@ open('lorem.txt').read(),
 encodeImage('test.jpg'),
 op)
 
-def createEvent(title,text,image,op):
-    return BasicEvent(title,text,image,op)
+EventList=[]
 
+def createEvent(title,text,image,op):
+    ev=BasicEvent(title,text,image,op)
+    EventList.append(ev)
+    return ev
+
+    # save everytime an event is created or changed by an edit mode user
+def saveEvents(e_list):
+    # we'll replace this later with the name of the campaign/universe and a timestamp
+    pickle.dump(e_list, open("event_save.p","wb"))
+
+    # load when the server starts up
+def loadEvents(save_file):
+    return pickle.load(open(save_file,"rb"))
+    
 def randomlist():
     l=[]
     for x in range(0,random.randint(1,10)):
@@ -74,7 +88,7 @@ def save_http_headers(ws):
     
 USERS = set()
     
-async def register(websocket):
+async def register(websocket): 
     USERS.add(websocket)
 
 async def unregister(websocket):
@@ -85,15 +99,19 @@ async def unregister(websocket):
 async def mainloop(websocket, path):
 
     # save_http_headers(websocket)
-    
-    async for message in websocket:
-        data = json.loads(message)
-        if data['action']=='newlist':
-            await websocket.send(json.dumps(randomlist()))
-        if data['action']=='newevent':
-            await websocket.send(json.dumps(be.toJSON()))
-        if data['action']=='choice':
-            await websocket.send(json.dumps(createEvent(title=data['new_event']).toJSON()))
+    await register(websocket)
+    try:
+        async for message in websocket:
+            data = json.loads(message)
+            if data['action']=='newlist':
+                await websocket.send(json.dumps(randomlist()))
+            if data['action']=='newevent':
+                await websocket.send(json.dumps(be.toJSON()))
+            if data['action']=='choice':
+                await websocket.send(json.dumps(createEvent(title=data['new_event']).toJSON()))
+    finally:
+        await unregister(websocket)
+
 
 start_server = websockets.serve(mainloop, '127.0.0.1', 5678)
 

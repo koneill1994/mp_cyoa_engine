@@ -39,7 +39,7 @@
                 choicebutton=document.createElement('button')
                 choicebutton.innerHTML=element[0]
                 choicebutton.setAttribute("class", "choicebutton");
-                //set its event to senf back to the server
+                //set its event to send back to the server
                 // that it was a choice action
                 // with a value of element[2]
                 choicebutton.onclick=function(event){
@@ -71,16 +71,24 @@
             formbox=document.createElement('form')
             edit_event.appendChild(formbox);
             
-            // for item in input list
-            //present an input text box
-            // or a file upload for the picture
-            //and then a submit button to send it to the server and update the server's state
-        
-            //also link to other events
-            // drop down list of other events?
-            // via <select>
-            // button to add another choicebutton
-            // user can edit choicebutton's text, and the event it links to
+            edit_event.input_list.forEach(function(element){
+                
+                if(element.type==text){
+                    document.createElement('input')
+                }
+                
+                // for item in input list
+                //present an input text box
+                // or a file upload for the picture
+                //and then a submit button to send it to the server and update the server's state
+            
+                //also link to other events
+                // drop down list of other events?
+                // via <select>
+                // button to add another choicebutton
+                // user can edit choicebutton's text, and the event it links to
+            
+            }
         
         }
         
