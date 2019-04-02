@@ -7,6 +7,7 @@ import random
 import websockets
 import base64
 import pickle
+import string
 
 # adapted with love from
 # https://websockets.readthedocs.io/en/stable/intro.html
@@ -25,15 +26,44 @@ import pickle
 
 # event should also have a type so that the client knows what to do with it
 class BasicEvent:
-    def __init__(self,title="",description="",image_bytes=None,options=[("exit","choice","exit")]):
+    def __init__(self,title="",description="",image_bytes=None,options=None):
         self.title=title
         self.description=description
-        self.options=options
+        
+        
         self.type="BasicEvent"
         self.image=image_bytes
+        if options==None:
+            self.options=[("exit","choice",self)]
+        else:
+            self.options=options
+    def MakeChoice(self,choice):
+        loc=-1
+        for n in range(0,len(self.options)):
+            if self.options[n][0]==choice:
+                loc=n
+        if loc==-1:
+            return None
+        else:
+            return self.options[n][2]
     def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__, 
-            sort_keys=True, indent=4)
+        # dict to send to client
+        options_clean=[]
+        for tuple in self.options:
+            options_clean.append(tuple[:2])
+        
+        d={
+            'title': self.title,
+            'description': self.description,
+            'type' : self.type,
+            'image' : self.image,
+            'options': options_clean
+        }
+        
+        return json.dumps(d)
+    
+        # return json.dumps(self, default=lambda o: o.__dict__, 
+            # sort_keys=True, indent=4)
     
 # def CreateInputBox(self,input_type):
     # d={}
@@ -54,22 +84,50 @@ class BasicEvent:
 def encodeImage(image_file):
     encoded = base64.b64encode(open(image_file, "rb").read())
     return str('data:image/png;base64,{}'.format(encoded.decode()))
+    
+def createEvent(title,text=None,image=None,op=None):
+    ev=BasicEvent(title,text,image,op)
+    EventList.append(ev)
+    return ev
+    
+def CreateBaseEvent(event_list,base_event):
+    for ev in event_list:
+        if ev.options[0]=="exit":
+            ev.options[2]=base_event
 
-op=[("a","choice","You chose a"),
-("b","choice","You chose b"),
-("c","choice","You chose c")]
+    
+EventList=[]
+   
+ev_a=createEvent("event a",
+open('lorem.txt').read()[::-1])
+    
+ev_b=createEvent("event b",
+(open('lorem.txt').read()))
+    
+ev_c=createEvent("event c",
+(open('lorem.txt').read()))
 
-be=BasicEvent("Event Title",
+    
+op=[("a","choice",ev_a),
+("b","choice",ev_b),
+("c","choice",ev_c)]
+
+be=createEvent("Event Title",
 open('lorem.txt').read(),
 encodeImage('test.jpg'),
 op)
 
-EventList=[]
+current_event=be
 
-def createEvent(title,text,image,op):
-    ev=BasicEvent(title,text,image,op)
-    EventList.append(ev)
-    return ev
+CreateBaseEvent(EventList,be)
+
+# define an event all other events will return back to
+
+def ChooseNewEvent(choice,current_event):
+    new_e=current_event.MakeChoice(choice)
+    if new_e:
+        current_event=new_e
+        return new_e
 
     # save everytime an event is created or changed by an edit mode user
 def saveEvents(e_list):
@@ -119,9 +177,9 @@ async def mainloop(websocket, path):
             if data['action']=='newlist':
                 await websocket.send(json.dumps(randomlist()))
             if data['action']=='newevent':
-                await websocket.send(json.dumps(be.toJSON()))
+                await websocket.send(be.toJSON())
             if data['action']=='choice':
-                await websocket.send(json.dumps(createEvent(title=data['new_event']).toJSON()))
+                await websocket.send(ChooseNewEvent(data['new_event'],current_event).toJSON())
     finally:
         await unregister(websocket)
 

@@ -43,7 +43,7 @@
                 // that it was a choice action
                 // with a value of element[2]
                 choicebutton.onclick=function(event){
-                    ws.send(JSON.stringify({action: element[1], new_event: element[2]}))
+                    ws.send(JSON.stringify({action: element[1], new_event: element[0]}))
                 }
                 //append each choice button onto the button holder
                 choicebox.appendChild(choicebutton)
@@ -118,11 +118,11 @@
                 ev_holder.removeChild(ev_holder.firstChild);
             }
                      
-            console.log(JSON.parse(JSON.parse(event.data)))
+            console.log(JSON.parse(event.data))
             
             //get the game event from the server
             // and turn it into a proper div via DisplayEvent()
-            GameEventBox=DisplayEvent(JSON.parse(JSON.parse(event.data)),ws)
+            GameEventBox=DisplayEvent(JSON.parse(event.data),ws)
             
             //stick our event div into our html
             ev_holder.appendChild(GameEventBox)
