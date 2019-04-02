@@ -126,7 +126,7 @@ async def mainloop(websocket, path):
         await unregister(websocket)
 
 
-start_server = websockets.serve(mainloop, '127.0.0.1', 5678)
+start_server = websockets.serve(mainloop, "",5678)
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
