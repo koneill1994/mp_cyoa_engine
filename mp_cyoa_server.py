@@ -62,9 +62,6 @@ class BasicEvent:
         
         return json.dumps(d)
     
-        # return json.dumps(self, default=lambda o: o.__dict__, 
-            # sort_keys=True, indent=4)
-    
 # def CreateInputBox(self,input_type):
     # d={}
     # d['type']=input_type

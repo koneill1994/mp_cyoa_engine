@@ -7,6 +7,7 @@
     <p>this is a test page, does not reflect final product</p>
     <p>(Yes it looks terrible currently.  Never underestimate the power of css to make something look legit)</p>
     <button type="button" class="newevent">Get new event from server</button>
+    <button type="button" class="editmode"> Toggle edit mode </button>
 
         <script>
         
@@ -23,10 +24,12 @@
             
             eventbox.appendChild(document.createElement('br'));
             
-            //create the image
-            img=new Image();
-            img.src=game_event.image;
-            eventbox.appendChild(img)
+            if(typeof(game_event.image)!=null){
+                //create the image
+                img=new Image();
+                img.src=game_event.image;
+                eventbox.appendChild(img)
+            }
             
             // set the description...[as above]
             desc=document.createElement('p')
@@ -89,7 +92,8 @@
                 // user can edit choicebutton's text, and the event it links to
             
             })
-        
+            // for reference:
+            // https://www.w3schools.com/js/tryit.asp?filename=tryjs_form_elements
         }
         
         <!-- function createMessageToServer(message_type){ -->
@@ -137,7 +141,7 @@
             ws.send(JSON.stringify({action: 'newevent'}));
         }
             
-            
+        editmode=document.query
             
         </script>
         
