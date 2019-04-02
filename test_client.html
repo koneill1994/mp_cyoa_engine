@@ -88,7 +88,7 @@
                 // button to add another choicebutton
                 // user can edit choicebutton's text, and the event it links to
             
-            }
+            })
         
         }
         
@@ -101,8 +101,11 @@
         
         <!-- } -->
         
+        <!-- ws_address="173.88.80.51" -->
+        ws_address="127.0.0.1"
+        
         //open up our websocket (localhost for now)
-        var ws = new WebSocket("ws://127.0.0.1:5678/");
+        var ws = new WebSocket("ws://" + ws_address + ":5678/");
         
         // create div to hold our event dialogue
         var ev_holder = document.createElement('div');

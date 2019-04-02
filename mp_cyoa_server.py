@@ -35,6 +35,19 @@ class BasicEvent:
         return json.dumps(self, default=lambda o: o.__dict__, 
             sort_keys=True, indent=4)
     
+# def CreateInputBox(self,input_type):
+    # d={}
+    # d['type']=input_type
+    # if(input_type=="text"):
+        # d[']
+    
+# class EditMode:
+    # def __init__(self,type):
+        # if(type=="BasicEvent"):
+            
+            
+            
+            
 # ability to save events via pickle
 # also list of all events
 
