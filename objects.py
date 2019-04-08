@@ -4,10 +4,16 @@
 # also why doesnt python have multiline comments
 
 # note that i use "id_" instead of just id because id is a built-in keyword of python and PEP 8 advises appending an _
+import websocket
 
 
 class Player:
-    id_ = ""
+    name = ""
+    websocket = None
+
+    def __init__(self, name, websocket):
+        self.name = name
+        self.websocket = websocket
     # todo: figure out how this object is structured
 
 
