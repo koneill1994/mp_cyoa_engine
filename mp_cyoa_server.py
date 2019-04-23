@@ -26,10 +26,10 @@ import string
 
 # event should also have a type so that the client knows what to do with it
 class BasicEvent:
-    def __init__(self,title="",description="",image_bytes=None,options=None):
+    def __init__(self,title="",label="",description="",image_bytes=None,options=None):
         self.title=title
         self.description=description
-        
+        self.label=label
         
         self.type="BasicEvent"
         self.image=image_bytes
@@ -68,11 +68,33 @@ class BasicEvent:
     # if(input_type=="text"):
         # d[']
     
-# class EditMode:
-    # def __init__(self,type):
-        # if(type=="BasicEvent"):
-            
-            
+class EditMode:
+    def __init__(self):
+        self.title="Event Edit Box"
+        self.type="EditMode"
+        
+        self.input_boxes={
+            "title": "text",
+            "label": "text",
+            "description": "text",
+            "image": "image",
+            "choices": "options"
+        }
+        
+        self.option={
+            "destination": "event_dropdown",     
+            "label": "text"
+        }
+    def toJSON(self):
+        
+        d={
+            "type":self.type,
+            "boxes":self.input_boxes,
+            "option":self.option,
+            "events":[a.label for a in EventList]
+        }
+        return json.dumps(d)
+
             
             
 # ability to save events via pickle
@@ -82,8 +104,8 @@ def encodeImage(image_file):
     encoded = base64.b64encode(open(image_file, "rb").read())
     return str('data:image/png;base64,{}'.format(encoded.decode()))
     
-def createEvent(title,text=None,image=None,op=None):
-    ev=BasicEvent(title,text,image,op)
+def createEvent(title,label=None,text=None,image=None,op=None):
+    ev=BasicEvent(title,label,text,image,op)
     EventList.append(ev)
     return ev
     
@@ -96,12 +118,15 @@ def CreateBaseEvent(event_list,base_event):
 EventList=[]
    
 ev_a=createEvent("event a",
+"a",
 open('lorem.txt').read()[::-1])
     
 ev_b=createEvent("event b",
+"b",
 (open('lorem.txt').read()))
     
 ev_c=createEvent("event c",
+"c",
 (open('lorem.txt').read()))
 
     
@@ -110,6 +135,7 @@ op=[("a","choice",ev_a),
 ("c","choice",ev_c)]
 
 be=createEvent("Event Title",
+"test_event",
 open('lorem.txt').read(),
 encodeImage('test.jpg'),
 op)
@@ -122,9 +148,8 @@ CreateBaseEvent(EventList,be)
 
 def ChooseNewEvent(choice,current_event):
     new_e=current_event.MakeChoice(choice)
-    if new_e:
-        current_event=new_e
-        return new_e
+    current_event=new_e
+    return new_e
 
     # save everytime an event is created or changed by an edit mode user
 def saveEvents(e_list):
@@ -175,6 +200,8 @@ async def mainloop(websocket, path):
                 await websocket.send(json.dumps(randomlist()))
             if data['action']=='newevent':
                 await websocket.send(be.toJSON())
+            if data['action']=='editmode':
+                await websocket.send(EditMode().toJSON())
             if data['action']=='choice':
                 await websocket.send(ChooseNewEvent(data['new_event'],current_event).toJSON())
     finally:

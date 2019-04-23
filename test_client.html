@@ -44,7 +44,7 @@
                 choicebutton.setAttribute("class", "choicebutton");
                 //set its event to send back to the server
                 // that it was a choice action
-                // with a value of element[2]
+                // with a value of element[1]
                 choicebutton.onclick=function(event){
                     ws.send(JSON.stringify({action: element[1], new_event: element[0]}))
                 }
@@ -74,9 +74,9 @@
             formbox=document.createElement('form')
             edit_event.appendChild(formbox);
             
-            edit_event.input_list.forEach(function(element){
+            Object.keys(edit_event.boxes).forEach(function(element){
                 
-                if(element.type==text){
+                if(edit_event.boxes[element]=="text"){
                     document.createElement('input')
                 }
                 
@@ -122,14 +122,24 @@
                 ev_holder.removeChild(ev_holder.firstChild);
             }
                      
-            console.log(JSON.parse(event.data))
+                     
+            ev=JSON.parse(event.data)
             
-            //get the game event from the server
-            // and turn it into a proper div via DisplayEvent()
-            GameEventBox=DisplayEvent(JSON.parse(event.data),ws)
+            console.log(ev)
             
+            
+            if(ev.type="BasicEvent"){
+                //get the game event from the server
+                // and turn it into a proper div via DisplayEvent()
+                GameEventBox=DisplayEvent(JSON.parse(event.data),ws)
+                
+            }
+            else if(ev.type="EditMode"){
+                GameEventBox=DisplayEditBox(ev,ws)
+            }
             //stick our event div into our html
             ev_holder.appendChild(GameEventBox)
+
             
         };
         
@@ -141,7 +151,11 @@
             ws.send(JSON.stringify({action: 'newevent'}));
         }
             
-        editmode=document.query
+        editmode=document.querySelector(".editmode");
+        
+        editmode.onclick=function(event){
+            ws.send(JSON.stringify({action: 'editmode'}));
+        }
             
         </script>
         
