@@ -50,9 +50,7 @@ class BasicEvent:
 
     def toJSON(self):
         # dict to send to client
-        options_clean = []
-        for tuple in self.options:
-            options_clean.append(tuple[:2])
+        options_clean = [a[:2] for a in self.options]
 
         d = {
             'title': self.title,
@@ -114,13 +112,13 @@ def CreateBaseEvent(event_list, base_event):
 
 EventList = []
 
-ev_a = createEvent("event a",
+ev_a = createEvent("event a","a",
                    open('lorem.txt').read()[::-1])
 
-ev_b = createEvent("event b",
+ev_b = createEvent("event b","b",
                    (open('lorem.txt').read()))
 
-ev_c = createEvent("event c",
+ev_c = createEvent("event c","c",
                    (open('lorem.txt').read()))
 
 op = [("a", "choice", ev_a),
@@ -128,6 +126,7 @@ op = [("a", "choice", ev_a),
       ("c", "choice", ev_c)]
 
 be = createEvent("Event Title",
+                 "test_event",
                  open('lorem.txt').read(),
                  encodeImage('test.jpg'),
                  op)

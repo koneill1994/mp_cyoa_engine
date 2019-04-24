@@ -67,18 +67,37 @@
             title=document.createElement('b');
             title.innerHTML = edit_event.title;
             title.setAttribute("class","event_title");
-            edit_event.appendChild(title);
+            editbox.appendChild(title);
             
-            edit_event.appendChild(document.createElement('br'));
+            editbox.appendChild(document.createElement('br'));
             
             formbox=document.createElement('form')
-            edit_event.appendChild(formbox);
+            editbox.appendChild(formbox);
+            
+            console.log(Object.keys(edit_event.boxes))
             
             Object.keys(edit_event.boxes).forEach(function(element){
                 
+                input_box=document.createElement('div')
+                
+                input_title=document.createElement('b')
+                input_title.innerHTML=element
+                
+                input_box.appendChild(input_title)
+                
+                input_field=document.createElement('input')
+                
                 if(edit_event.boxes[element]=="text"){
-                    document.createElement('input')
+                    input_field.setAttribute("type","text");
                 }
+                if(edit_event.boxes[element]=="image"){
+                    input_field.setAttribute("type","file");
+                }
+                
+                input_box.appendChild(input_field)
+                
+                formbox.appendChild(input_box)
+                
                 
                 // for item in input list
                 //present an input text box
@@ -94,6 +113,8 @@
             })
             // for reference:
             // https://www.w3schools.com/js/tryit.asp?filename=tryjs_form_elements
+            
+            return(editbox)
         }
         
         <!-- function createMessageToServer(message_type){ -->
@@ -128,13 +149,13 @@
             console.log(ev)
             
             
-            if(ev.type="BasicEvent"){
+            if(ev.type=="BasicEvent"){
                 //get the game event from the server
                 // and turn it into a proper div via DisplayEvent()
-                GameEventBox=DisplayEvent(JSON.parse(event.data),ws)
+                GameEventBox=DisplayEvent(ev,ws)
                 
             }
-            else if(ev.type="EditMode"){
+            else if(ev.type=="EditMode"){
                 GameEventBox=DisplayEditBox(ev,ws)
             }
             //stick our event div into our html
