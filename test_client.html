@@ -7,7 +7,7 @@
     <p>this is a test page, does not reflect final product</p>
     <p>(Yes it looks terrible currently.  Never underestimate the power of css to make something look legit)</p>
     <button type="button" class="newevent">Get new event from server</button>
-    <button type="button" class="editmode"> Toggle edit mode </button>
+    <button type="button" class="editmode"> Edit mode </button>
 
         <script>
         
@@ -96,6 +96,8 @@
                 
                 input_box.appendChild(input_field)
                 
+
+                
                 formbox.appendChild(input_box)
                 
                 
@@ -114,9 +116,54 @@
             // for reference:
             // https://www.w3schools.com/js/tryit.asp?filename=tryjs_form_elements
             
+            addop_button=document.createElement('button')
+            removeop_button=document.createElement('button')
+            
+            option_holder=document.createElement('div')
+            
+            addop_button.innerHTML="add option"
+            addop_button.onclick=function(event){
+                console.log("addoption_outsdie");
+                EditorAddOption(option_holder,edit_event.events);}
+            editbox.appendChild(addop_button)
+            
+            removeop_button.innerHTML="remove option"
+            removeop_button.onclick=function(event){
+                EditorRemoveOption(option_holder);}
+            editbox.appendChild(removeop_button)
+            
+            editbox.appendChild(option_holder)
+            
+            
             return(editbox)
         }
         
+        function EditorRemoveOption(parent){
+            parent.removeChild(
+                parent.childNodes[parent.childNodes.length-1]
+            )
+        }
+        
+        function EditorAddOption(parent,options){
+        
+            optionbox=document.createElement('div')
+            input_field=document.createElement('input')
+            input_field.setAttribute("type","text");
+            input_field.setAttribute("value","button text");
+            optionbox.appendChild(input_field)
+            
+            dropdown=document.createElement('select')
+            options.forEach(function(el){
+                op=document.createElement('option')
+                op.value=el
+                op.text=el
+                dropdown.appendChild(op)
+            })
+            
+            optionbox.appendChild(dropdown)
+            
+            parent.appendChild(optionbox)
+        }
         <!-- function createMessageToServer(message_type){ -->
             <!-- // this function creates objects to be sent to the server -->
             <!-- // each object requires a messagetype to tell the server what to do with it -->

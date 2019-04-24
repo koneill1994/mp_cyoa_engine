@@ -71,8 +71,7 @@ class EditMode:
             "title": "text",
             "label": "text",
             "description": "text",
-            "image": "image",
-            "choices": "options"
+            "image": "image"
         }
         
         self.option={
